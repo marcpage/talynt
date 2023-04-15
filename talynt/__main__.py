@@ -6,6 +6,7 @@
 
 
 import argparse
+import sys
 
 import talynt.webserver
 
@@ -14,8 +15,9 @@ DEFAULT_WEB_PORT = 8000
 DEFAULT_DATABASE = "talynt.sqlite3"
 
 
-def parse_command_line():
+def parse_command_line(command_line=None):
     """Parses command line options"""
+    command_line = command_line or sys.argv[1:]
     parser = argparse.ArgumentParser(
         description="A web-based job description evaluator"
     )
@@ -42,11 +44,12 @@ def parse_command_line():
     parser.add_argument(
         "--debug", dest="debug", action="store_true", help="Should we be debugging"
     )
-    return parser.parse_args()
+    return parser.parse_args(args=command_line)
 
 
-def main(args=parse_command_line()):
+def main(args=None):
     """main entrypoint"""
+    args = args or parse_command_line()
     app = talynt.webserver.create_app(args)
 
     try:
