@@ -25,6 +25,7 @@ def parse_command_line(command_line=None):
         "-p",
         "--port",
         dest="port",
+        default=DEFAULT_WEB_PORT,
         type=int,
         help=f"The port the web server listens on ({DEFAULT_WEB_PORT})",
     )
