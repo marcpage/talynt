@@ -19,7 +19,7 @@ class Description:
             self.__in_description = True  # description start
 
         elif self.__in_description and not entity.matches('section', 'div'):
-            self.__description += str(entity)  # values in description
+            self.__description += str(entity).strip()  # values in description
 
         elif self.__in_description and entity.end and entity.matches('div'):
             self.__in_description = False  # end of description
@@ -81,7 +81,7 @@ def parse(html:str) -> dict:
         Title(),
         Company(),
         Location(),
-    ).feed().properties()
+    ).feed(html).properties()
 
 
 import sys
