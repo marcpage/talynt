@@ -5,6 +5,7 @@
 
 
 import flask
+from flask import request
 
 import talynt.sessionkey
 import talynt.template
@@ -51,6 +52,15 @@ def create_app(args):
         )
 
         return contents, 200
+
+    @app.route("/add_job_posting")
+    def home():
+        contents = talynt.template.render(
+            "templates/home.html.mako",
+            message=message,
+            user_id=user_id,
+            password_hash=password_hash,
+        )
 
     @app.route("/login_failed")
     def invalid_login():
