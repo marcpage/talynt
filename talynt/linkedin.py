@@ -4,54 +4,7 @@
 """
 
 
-import html.parser
-import re
-
-
-class Entity:
-    def __init__(self, name:str=None, attrs:list=None, data:str=None, end=False):
-        self.__name = name
-        self.data = data
-        self.end = end
-        self.__attrs = attrs if attrs else []
-
-    def __str__(self) -> str:
-        if self.end:
-            return f"</{self.__name}>"
-
-        if self.data is not None:
-            return self.data
-
-        return f"<{self.__name}" + ''.join(f' {a[0]}="{a[1]}"' for a in self.__attrs) + ">"
-
-    def matches(self, *keys) -> bool:
-        if self.__name is None:
-            return False
-
-        return self.__name.lower() in [k.lower() for k in keys]
-
-    def contains(self, key:str, check:str) -> bool:
-        value = self.get(key)
-        return False if value is None else check.lower() in value.lower()
-
-    def get(self, key:str, default:str=None) -> str:
-        found = [a[1] for a in self.__attrs if a[0].lower() == key.lower()]
-        return found[0] if found else default
-
-    def __getitem__(self, key:str) -> str:
-        return self.get(key)
-
-    def __len__(self):
-        return len(self.__attrs)
-
-    def has_key(self, key):
-        return key.lower() in self.keys()
-
-    def keys(self):
-        return [a[0].lower() for a in self.__attrs]
-
-    def values(self):
-        return [a[1] for a in self.__attrs]
+import talynt.html
 
 
 class Description:
@@ -61,7 +14,7 @@ class Description:
         self.__in_description = False
         self.__description = ''
 
-    def handle(self, entity:Entity):
+    def handle(self, entity:talynt.html.Entity):
         if entity.matches('div') and entity.contains('class', Description.CLASS_DESCRIPTION):
             self.__in_description = True  # description start
 
@@ -85,7 +38,7 @@ class Criteria:
         self.__in_criteria_value = False
         self.__values = {}
 
-    def handle(self, entity:Entity):
+    def handle(self, entity:talynt.html.Entity):
         if entity.matches('h3') and entity.contains('class', Criteria.CLASS_TYPE):
             self.__in_criteria_type = True
 
@@ -106,28 +59,32 @@ class Criteria:
         return self.__values
 
 
-class Scraper(html.parser.HTMLParser):
-
+class Title(talynt.html.MetaData):
     def __init__(self):
-        self.__scanners = (Criteria(), Description())
-        super().__init__()
+        super().__init__('h3', 'class', 'sub-nav-cta__header', 'title')
 
-    def __scan(self, entity:Entity):
-        for scanner in self.__scanners:
-            scanner.handle(entity)
 
-    def handle_starttag(self, tag:str, attrs:list):
-        self.__scan(Entity(name=tag, attrs=attrs))
+class Company(talynt.html.MetaData):
+    def __init__(self):
+        super().__init__('a', 'href', 'linkedin.com/company', 'company')
 
-    def handle_endtag(self, tag:str):
-        self.__scan(Entity(name=tag, end=True))
 
-    def handle_data(self, data:str):
-        self.__scan(Entity(data=data))
+class Location(talynt.html.MetaData):
+    def __init__(self):
+        super().__init__('span', 'class', 'sub-nav-cta__meta-text', 'location')
 
-    def feed(self, contents:str):
-        super().feed(contents)
-        return self
 
-    def properties(self) -> dict:
-        return {k:v for s in self.__scanners for k,v in s.value().items()}
+def parse(html:str) -> dict:
+    return talynt.html.Scraper(
+        Description(),
+        Criteria(),
+        Title(),
+        Company(),
+        Location(),
+    ).feed().properties()
+
+
+import sys
+
+with open(sys.argv[1], 'r') as html:
+    print(parse(html.read()))
