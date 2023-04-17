@@ -49,18 +49,23 @@ def create_app(args):
             message=message,
             user_id=user_id,
             password_hash=password_hash,
+            url=None,
         )
 
         return contents, 200
 
-    @app.route("/add_job_posting")
-    def home():
+    @app.route("/add_job_posting/<path:url>")
+    def add_position(url):
+        #print(request.form['url'])
+        print(url)
         contents = talynt.template.render(
             "templates/home.html.mako",
-            message=message,
-            user_id=user_id,
-            password_hash=password_hash,
+            message=None,
+            user_id=None,
+            password_hash=None,
+            url=url,
         )
+        return contents, 200
 
     @app.route("/login_failed")
     def invalid_login():
