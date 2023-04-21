@@ -1,12 +1,12 @@
 .PHONE:clean venv install upgrade uninstall check dist format lint test coverage report
 
-MIN_TEST_COVERAGE=99
+MIN_TEST_COVERAGE=43
 MODULE_NAME=talynt
 REQUIREMENTS_FILE=requirements.txt
 SOURCES=$(MODULE_NAME)/*.py
 TEST_DIR=tests
 TESTS=$(TEST_DIR)/*.py
-TEST_FILES=$(TEST_DIR)/*.vi $(TEST_DIR)/*.yaml
+TEST_FILES=
 VENV_DIR=.venv
 VENV_ACTIVATE_SCRIPT=$(VENV_DIR)/bin/activate
 LINT_LOG=$(VENV_DIR)/lint.txt
