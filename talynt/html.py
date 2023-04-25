@@ -67,12 +67,38 @@ class MetaData:
             self.__in_tag = True
         elif entity.end and entity.matches(self.__tag):
             self.__in_tag = False
-        elif entity.data is not None and self.__in_tag:
+        elif entity.data is not None and self.__in_tag and entity.data.strip():
             self.__value = entity.data.strip()
             self.__in_tag = False
 
     def value(self) -> dict:
         return {} if self.__value is None else {self.__name: self.__value}
+
+
+class TagPattern:
+    def __init__(self, tag:str, re_pattern):
+        self.__in_tag = 0
+        self.__tag = tag
+        self.__pattern = re_pattern
+        self.__values = {}
+
+
+    def handle(self, entity:Entity):
+        if entity.matches(self.__tag) and not entity.end:
+            self.__in_tag += 1
+
+        elif entity.matches(self.__tag) and entity.end:
+            self.__in_tag -= 1
+
+        elif entity.data is not None and self.__in_tag > 0:
+            contains_pattern = self.__pattern.search(entity.data)
+
+            if contains_pattern:
+                found = {k:v for k,v in contains_pattern.groupdict().items() if v is not None}
+                self.__values.update(found)
+
+    def value(self) -> dict:
+        return self.__values
 
 
 class Scraper(html.parser.HTMLParser):

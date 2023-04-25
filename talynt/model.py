@@ -127,6 +127,15 @@ class Job(Table):
     text = String(4096)
 
 
+class UserJob(Table):
+    """ bookmarked jobs """
+
+    _db = None
+    id = Indentifier()
+    user_id = Identifier()
+    job_id = Identifier()
+
+
 class Level(enum.Enum):
     """ Levels of experience """
 
@@ -169,11 +178,11 @@ class UserSkill(Table):
 class Database:
     """stored information"""
 
-    tables = [User, Skill, Job, JobSkill, UserSkill]
+    tables = [User, Skill, Job, JobSkill, UserSkill, UserJob]
 
     def __init__(self, db_url):
         """create db
-        db_url - a SqlAlchemy URL for the database
+        db_url - a URL for the database
         """
         self.__db = financial_game.database.Connection.connect(
             db_url, default_return_objects=False
