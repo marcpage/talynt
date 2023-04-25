@@ -1,6 +1,6 @@
 .PHONE:clean venv install upgrade uninstall check dist format lint test coverage report
 
-MIN_TEST_COVERAGE=43
+MIN_TEST_COVERAGE=71
 MODULE_NAME=talynt
 REQUIREMENTS_FILE=requirements.txt
 SOURCES=$(MODULE_NAME)/*.py

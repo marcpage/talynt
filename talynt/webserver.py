@@ -5,7 +5,6 @@
 
 
 import flask
-from flask import request
 
 import talynt.sessionkey
 import talynt.template
@@ -14,12 +13,12 @@ import talynt.template
 COOKIE = "session_id"  # name of the cookie that contains the session key
 
 
-def get_user(request, args):
+def get_user(request_info, args):
     """Determines the user (or None) that is requesting the page"""
-    if COOKIE in request.cookies:
+    if COOKIE in request_info.cookies:
         user_id, password_hash = talynt.sessionkey.parse(
-            request.cookies[COOKIE],
-            request.headers,
+            request_info.cookies[COOKIE],
+            request_info.headers,
             args.secret,
         )
 
@@ -56,7 +55,7 @@ def create_app(args):
 
     @app.route("/add_job_posting/<path:url>")
     def add_position(url):
-        #print(request.form['url'])
+        # print(request.form['url'])
         print(url)
         contents = talynt.template.render(
             "templates/home.html.mako",

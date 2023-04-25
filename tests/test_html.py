@@ -34,6 +34,7 @@ class Scanner:
 
 def test_basic():
     value = Scraper(Scanner()).feed(HTML).properties()
+    Scraper(Scanner()).error("does nothing")
 
 
 if __name__ == "__main__":

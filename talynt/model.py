@@ -3,8 +3,14 @@
 """ Data model
 """
 
-from financial_game.table import Table, Identifier, String, ForeignKey
-from financial_game.table import Enum, Fixed, Money, Integer, Date
+
+import hashlib
+import enum
+
+from talynt.table import Table, Identifier, String, ForeignKey
+from talynt.table import Enum, Fixed, Money, Integer, Date
+import talynt.database
+
 
 class User(Table):
     """User info"""
@@ -95,30 +101,33 @@ class User(Table):
 
 
 class Skill(Table):
-    """ Skills or experience """
+    """Skills or experience"""
 
     _db = None
     id = Identifier()
     name = String(50, allow_null=False)
 
     @staticmethod
-    def create(name:str):
+    def create(name: str):
+        """Create a new skill"""
         link = Skill(name=name)
 
 
 class Employment(enum.Enum):
+    """Type of employment"""
+
     FULL = 1  # Full time
     PART = 2  # Part time
     CTRC = 3  # Contract
 
 
 class Job(Table):
-    """ job description """
+    """job description"""
 
     _db = None
     id = Identifier()
     url = String(2083)
-    title = String(50, allow_null=False)
+    title = String(50)
     company = String(50)
     salary_low = Money()
     salary_high = Money()
@@ -128,16 +137,16 @@ class Job(Table):
 
 
 class UserJob(Table):
-    """ bookmarked jobs """
+    """bookmarked jobs"""
 
     _db = None
-    id = Indentifier()
-    user_id = Identifier()
-    job_id = Identifier()
+    id = Identifier()
+    user_id = ForeignKey("User", allow_null=False)
+    job_id = ForeignKey("Job", allow_null=False)
 
 
 class Level(enum.Enum):
-    """ Levels of experience """
+    """Levels of experience"""
 
     NONE = 0  # No experience
     NOOB = 1  # Tinkering
@@ -148,25 +157,24 @@ class Level(enum.Enum):
 
 
 class JobSkill(Table):
-    """ Skill required for a job """
+    """Skill required for a job"""
 
     _db = None
     id = Identifier()
-    job_id = Identifier()
-    skill_id = Identifier()
+    job_id = ForeignKey("Job", allow_null=False)
+    skill_id = ForeignKey("Skill", allow_null=False)
     years = Integer()
     level = Enum(Level)
     priority = Integer()
 
 
-
 class UserSkill(Table):
-    """ Skill levels """
+    """Skill levels"""
 
     _db = None
     id = Identifier()
-    user_id = Identifier()
-    skill_id = Identifier()
+    user_id = ForeignKey("User", allow_null=False)
+    skill_id = ForeignKey("Skill", allow_null=False)
     years = Integer()
     years_since = Integer()
     level = Enum(Level)
@@ -174,7 +182,7 @@ class UserSkill(Table):
     example = String(4096)
 
 
-
+# pylint: disable=too-few-public-methods
 class Database:
     """stored information"""
 
@@ -184,7 +192,7 @@ class Database:
         """create db
         db_url - a URL for the database
         """
-        self.__db = financial_game.database.Connection.connect(
+        self.__db = talynt.database.Connection.connect(
             db_url, default_return_objects=False
         )
         description = Table.database_description(*Database.tables)
@@ -196,4 +204,3 @@ class Database:
     def close(self):
         """close down the connection to the database"""
         self.__db.close()
-
