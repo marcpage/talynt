@@ -8,7 +8,7 @@ import hashlib
 import enum
 
 from talynt.table import Table, Identifier, String, ForeignKey
-from talynt.table import Enum, Fixed, Money, Integer, Date
+from talynt.table import Enum, Money, Integer
 import talynt.database
 
 
@@ -110,7 +110,7 @@ class Skill(Table):
     @staticmethod
     def create(name: str):
         """Create a new skill"""
-        link = Skill(name=name)
+        # link = Skill(name=name)
 
 
 class Employment(enum.Enum):
@@ -133,7 +133,7 @@ class Job(Table):
     salary_high = Money()
     employment = Enum(Employment)
     location = String(50)
-    text = String(4096)
+    description = String(4096)
 
 
 class UserJob(Table):

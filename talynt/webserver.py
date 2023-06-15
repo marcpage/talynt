@@ -8,6 +8,7 @@ import flask
 
 import talynt.sessionkey
 import talynt.template
+import talynt.model
 
 
 COOKIE = "session_id"  # name of the cookie that contains the session key
@@ -35,6 +36,7 @@ def none_if_empty(value: str) -> str:
 def create_app(args):
     """create the flask app"""
     app = flask.Flask(__name__)
+    storage = talynt.model.Database(args.database)
 
     # Mark: Root
 
