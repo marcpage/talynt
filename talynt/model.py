@@ -17,7 +17,6 @@ class User(Table):
 
     _db = None
     id = Identifier()
-    name = String(50, allow_null=False)
     email = String(50, allow_null=False)
     password_hash = String(64, allow_null=False)
 
@@ -29,13 +28,12 @@ class User(Table):
         return hasher.hexdigest()
 
     @staticmethod
-    def create(email: str, password: str, name: str, pw_hashed=False):
+    def create(email: str, password: str, pw_hashed=False):
         """create a new user entry"""
         assert password is not None
         user = User(
             email=email,
             password_hash=password if pw_hashed else User.hash_password(password),
-            name=name,
             _normalize_=False,
         ).denormalize()
         created = User._db.insert(Table.name(User), **user)

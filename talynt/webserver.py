@@ -44,6 +44,7 @@ def create_app(args):
     def home(message=None):
         """default location for the server, home"""
         user_id, password_hash = get_user(flask.request, args)
+        print(user_id, password_hash)
 
         contents = talynt.template.render(
             "templates/home.html.mako",

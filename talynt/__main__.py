@@ -12,7 +12,7 @@ import talynt.webserver
 
 
 DEFAULT_WEB_PORT = 8000
-DEFAULT_DATABASE = "talynt.sqlite3"
+DEFAULT_DATABASE = "sqlite://talynt.sqlite3"
 
 
 def parse_command_line(command_line=None):
@@ -34,12 +34,14 @@ def parse_command_line(command_line=None):
         "--db",
         dest="database",
         type=str,
+        default=DEFAULT_DATABASE,
         help="path to Sqlite3 database " + f"({DEFAULT_DATABASE})",
     )
     parser.add_argument(
         "--secret",
         dest="secret",
         type=str,
+        required=True,
         help="The secret phrase used to encrypt session tokens",
     )
     parser.add_argument(

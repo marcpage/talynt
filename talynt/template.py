@@ -30,7 +30,7 @@ def render(template_path, *search_dirs, **args):
     )
     search_dirs.append(script_parent_dir)
     search_dirs.append(os.path.split(template_path)[0])
-    print(search_dirs)
+    #print(search_dirs)
     lookup = mako.lookup.TemplateLookup(
         directories=list(set(search_dirs)),
         module_directory="/tmp/mako_modules",

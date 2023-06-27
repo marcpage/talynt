@@ -1,6 +1,7 @@
-.PHONE:clean venv install upgrade uninstall check dist format lint test coverage report
+.PHONE:clean venv install upgrade uninstall check dist format lint test coverage report debug
 
 MIN_TEST_COVERAGE=71
+SECRET=password
 MODULE_NAME=talynt
 REQUIREMENTS_FILE=requirements.txt
 SOURCES=$(MODULE_NAME)/*.py
@@ -37,6 +38,9 @@ $(BLACK_LOG): $(SOURCES) $(VENV_ACTIVATE_SCRIPT)
 
 format: $(BLACK_LOG)
 	@cat $<
+
+debug: $(VENV_ACTIVATE_SCRIPT)
+	@$(RUN_IN_VENV) python3 -m talynt --debug --secret $(SECRET)
 
 $(LINT_LOG): $(SOURCES) $(VENV_ACTIVATE_SCRIPT)
 	@$(RUN_IN_VENV) pip3 install -q pylint && pylint $(SOURCES) \
