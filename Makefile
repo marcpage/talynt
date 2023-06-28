@@ -16,6 +16,7 @@ TEST_LOG=$(VENV_DIR)/test.txt
 DIST_LOG=$(VENV_DIR)/dist.txt
 COVERAGE_LOG=$(VENV_DIR)/coverage.txt
 RUN_IN_VENV=. $(VENV_ACTIVATE_SCRIPT) &&
+TEST_DB=$(PWD)/.venv/test_db.sqlite3
 
 all:format lint coverage install check dist
 
@@ -40,7 +41,7 @@ format: $(BLACK_LOG)
 	@cat $<
 
 debug: $(VENV_ACTIVATE_SCRIPT)
-	@$(RUN_IN_VENV) python3 -m talynt --debug --secret $(SECRET)
+	@$(RUN_IN_VENV) python3 -m talynt --debug --secret $(SECRET) --db sqlite:///$(TEST_DB)
 
 $(LINT_LOG): $(SOURCES) $(VENV_ACTIVATE_SCRIPT)
 	@$(RUN_IN_VENV) pip3 install -q pylint && pylint $(SOURCES) \

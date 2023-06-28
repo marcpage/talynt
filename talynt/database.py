@@ -148,7 +148,6 @@ class Connection:
         parts = urllib.parse.urlparse(url)
         assert parts.scheme in Connection.ACCPEPTED_SCHEMES, parts.scheme
         database = None
-        assert parts.scheme == "sqlite", parts.scheme
 
         if parts.scheme == "sqlite":
             query = urllib.parse.parse_qs(parts.query)
