@@ -16,6 +16,14 @@
             <%include file="login.html.mako"/>
         % else:
             <%include file="logout.html.mako"/>
+
+            <div>
+                <form action="/add_posting" method="POST">
+                    <textarea name="urls" rows=10 cols=180 placeholder="Add job posting URLs, one per line"></textarea>
+                    <input type="submit" value="add"/>
+                </form>
+            </div>
+
         % endif
     </body>
 </html>

@@ -52,8 +52,14 @@ def create_app(args):
 
         return contents, 200
 
+    @app.route("/add_posting", methods=["POST"])
+    def add_position():
+        urls = flask.request.form["urls"]
+        print(urls)
+        return home(message="Invalid Login")
+
     @app.route("/add_job_posting/<path:url>")
-    def add_position(url):
+    def add_position_quick(url):
         # print(request.form['url'])
         print(url)
         contents = talynt.template.render(
