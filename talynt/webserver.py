@@ -10,6 +10,7 @@ import talynt.sessionkey
 import talynt.template
 import talynt.model
 
+from talynt.model import User
 
 COOKIE = "session_id"  # name of the cookie that contains the session key
 
@@ -36,7 +37,7 @@ def none_if_empty(value: str) -> str:
 def create_app(args):
     """create the flask app"""
     app = flask.Flask(__name__)
-    storage = talynt.model.Database(args.database)
+    _ = talynt.model.Database(args.database)
 
     # Mark: Root
 
@@ -81,11 +82,39 @@ def create_app(args):
         response.set_cookie(COOKIE, "", expires=0)
         return response
 
-    @app.route("/login", methods=["POST"])
-    def login():
+    @app.route("/create_account", methods=["POST"])
+    def create_account():
+        email = flask.request.form["email"]
+        password = flask.request.form["password"]
+        password2 = flask.request.form["password_2"]
+
+        if password != password2:  # TODO: unique message  # pylint: disable=fixme
+            return flask.make_response(flask.redirect(flask.url_for("invalid_login")))
+
+        user = User.lookup(email)
+
+        if user:  # TODO: unique message  # pylint: disable=fixme
+            return flask.make_response(flask.redirect(flask.url_for("invalid_login")))
+
+        user = User.create(email, password)
         response = flask.make_response(flask.redirect(flask.url_for("home")))
         session_key = talynt.sessionkey.create(
-            1, "password", flask.request.headers, args.secret
+            user.id, user.password_hash, flask.request.headers, args.secret
+        )
+        response.set_cookie(COOKIE, session_key)
+        return response
+
+    @app.route("/login", methods=["POST"])
+    def login():
+        user = User.lookup(flask.request.form["email"])
+        valid = user and user.password_matches(flask.request.form["password"])
+
+        if not valid:
+            return flask.make_response(flask.redirect(flask.url_for("invalid_login")))
+
+        response = flask.make_response(flask.redirect(flask.url_for("home")))
+        session_key = talynt.sessionkey.create(
+            user.id, user.password_hash, flask.request.headers, args.secret
         )
         response.set_cookie(COOKIE, session_key)
         return response

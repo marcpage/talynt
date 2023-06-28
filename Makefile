@@ -1,7 +1,7 @@
 .PHONE:clean venv install upgrade uninstall check dist format lint test coverage report debug
 
-MIN_TEST_COVERAGE=71
-SECRET=password
+MIN_TEST_COVERAGE=89
+SECRET="SetecAstronomy"
 MODULE_NAME=talynt
 REQUIREMENTS_FILE=requirements.txt
 SOURCES=$(MODULE_NAME)/*.py
@@ -23,7 +23,7 @@ clean:
 	rm -Rf build dist $(MODULE_NAME).egg-info $(VENV_DIR) htmlcov .coverage .pytest_cache
 	@echo Now Clean
 
-$(VENV_ACTIVATE_SCRIPT):
+$(VENV_ACTIVATE_SCRIPT): $(REQUIREMENTS_FILE)
 	@python3 -m venv $(VENV_DIR)
 	@$(RUN_IN_VENV) python3 -m pip install -q --upgrade pip && pip3 install -q setuptools wheel
 	@$(RUN_IN_VENV) pip3 install -r $(REQUIREMENTS_FILE)

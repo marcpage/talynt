@@ -7,12 +7,13 @@
 
 import argparse
 import sys
+import os
 
 import talynt.webserver
 
 
 DEFAULT_WEB_PORT = 8000
-DEFAULT_DATABASE = "sqlite://talynt.sqlite3"
+DEFAULT_DATABASE = f"sqlite://{os.path.realpath('talynt.sqlite3')}"
 
 
 def parse_command_line(command_line=None):
