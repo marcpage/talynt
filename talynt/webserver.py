@@ -29,11 +29,6 @@ def get_user(request_info, args):
     return None, None
 
 
-def none_if_empty(value: str) -> str:
-    """Returns None if value is empty or None, the value otherwise"""
-    return value if value else None
-
-
 def create_app(args):
     """create the flask app"""
     app = flask.Flask(__name__)
@@ -45,7 +40,7 @@ def create_app(args):
     def home(message=None):
         """default location for the server, home"""
         user_id, password_hash = get_user(flask.request, args)
-        print(user_id, password_hash)
+        # print(user_id, password_hash)
 
         contents = talynt.template.render(
             "templates/home.html.mako",
@@ -101,7 +96,7 @@ def create_app(args):
         session_key = talynt.sessionkey.create(
             user.id, user.password_hash, flask.request.headers, args.secret
         )
-        response.set_cookie(COOKIE, session_key)
+        response.set_cookie(key=COOKIE, value=session_key)
         return response
 
     @app.route("/login", methods=["POST"])

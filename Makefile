@@ -1,6 +1,6 @@
 .PHONE:clean venv install upgrade uninstall check dist format lint test coverage report debug
 
-MIN_TEST_COVERAGE=89
+MIN_TEST_COVERAGE=91
 SECRET="SetecAstronomy"
 MODULE_NAME=talynt
 REQUIREMENTS_FILE=requirements.txt
